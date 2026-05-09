@@ -26,4 +26,5 @@
 - Created Amplify app `dfasxx3um10jb` with branch `main`; the branch URL responds at `https://main.dfasxx3um10jb.amplifyapp.com`.
 - Added CDK context and `scripts/connect-amplify-git.ps1` support for a Git-connected Amplify release job using `https://github.com/qfashion18-png/yuzucreatorprintai.git`.
 - Amplify requires a valid GitHub/OAuth token before it will connect a repository and start a Git-backed SSR build.
+- Git-connected Amplify builds use `creator-print-ai/apps/web` as the monorepo app root because the pushed repository contains the project in a nested folder.
 - The Next.js SSR runtime source still needs a GitHub repo connection; Amplify manual deployments are not appropriate for SSR route-handler apps.
