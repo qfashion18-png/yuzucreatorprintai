@@ -4,9 +4,10 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WEB_DIR="$ROOT/apps/web"
 NEXT_TARGET="$WEB_DIR/.next/node_modules"
+STANDALONE_TARGET="$WEB_DIR/.next/standalone/node_modules"
 APP_TARGET="$WEB_DIR/node_modules"
 
-mkdir -p "$NEXT_TARGET" "$APP_TARGET"
+mkdir -p "$NEXT_TARGET" "$STANDALONE_TARGET" "$APP_TARGET"
 
 copy_package() {
   local package_name="$1"
@@ -35,10 +36,11 @@ copy_package() {
 
 for package_name in next @next react react-dom sharp styled-jsx; do
   copy_package "$package_name" "$NEXT_TARGET"
+  copy_package "$package_name" "$STANDALONE_TARGET"
   copy_package "$package_name" "$APP_TARGET"
 done
 
-if [ ! -f "$NEXT_TARGET/next/package.json" ] || [ ! -f "$APP_TARGET/next/package.json" ]; then
+if [ ! -f "$NEXT_TARGET/next/package.json" ] || [ ! -f "$STANDALONE_TARGET/next/package.json" ] || [ ! -f "$APP_TARGET/next/package.json" ]; then
   echo "Amplify runtime preparation failed: required next package copies are missing." >&2
   exit 1
 fi
