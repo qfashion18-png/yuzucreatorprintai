@@ -56,10 +56,10 @@ applications:
         preBuild:
           commands:
             - npm install -g pnpm@11.0.9
-            - cd "$CODEBUILD_SRC_DIR/creator-print-ai" && pnpm install --frozen-lockfile
+            - cd "$(git rev-parse --show-toplevel)/creator-print-ai" && pnpm install --frozen-lockfile
         build:
           commands:
-            - cd "$CODEBUILD_SRC_DIR/creator-print-ai" && pnpm --filter web build
+            - cd "$(git rev-parse --show-toplevel)/creator-print-ai" && pnpm --filter web build
       artifacts:
         baseDirectory: creator-print-ai/apps/web/.next
         files:
