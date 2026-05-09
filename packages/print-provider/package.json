@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.968.0",
-    "@creator-print-ai/core": "workspace:*",
+    "@creator-print-ai/core": "0.1.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {

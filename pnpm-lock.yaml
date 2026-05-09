@@ -66,22 +66,22 @@ importers:
         specifier: ^3.1045.0
         version: 3.1045.0
       '@creator-print-ai/ai':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../../packages/ai
       '@creator-print-ai/config':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../../packages/config
       '@creator-print-ai/core':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../../packages/core
       '@creator-print-ai/hyperframes':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../../packages/hyperframes
       '@creator-print-ai/print-provider':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../../packages/print-provider
       '@creator-print-ai/render':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../../packages/render
       '@hookform/resolvers':
         specifier: ^5.2.2
@@ -206,7 +206,7 @@ importers:
         specifier: ^3.968.0
         version: 3.1045.0
       '@creator-print-ai/core':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../core
       zod:
         specifier: ^4.2.1
@@ -264,7 +264,7 @@ importers:
         specifier: ^3.968.0
         version: 3.1045.0
       '@creator-print-ai/core':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../core
       zod:
         specifier: ^4.2.1
@@ -280,7 +280,7 @@ importers:
   packages/render:
     dependencies:
       '@creator-print-ai/core':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../core
       pdf-lib:
         specifier: ^1.17.1
@@ -302,7 +302,7 @@ importers:
   packages/templates:
     dependencies:
       '@creator-print-ai/core':
-        specifier: workspace:*
+        specifier: 0.1.0
         version: link:../core
     devDependencies:
       typescript:

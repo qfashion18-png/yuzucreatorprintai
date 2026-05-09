@@ -13,7 +13,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@creator-print-ai/core": "workspace:*"
+    "@creator-print-ai/core": "0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

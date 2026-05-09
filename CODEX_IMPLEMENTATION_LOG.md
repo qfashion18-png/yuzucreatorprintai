@@ -35,4 +35,5 @@
 - Created an `amplify-deploy` branch where the monorepo is at repository root; this avoids Amplify SSR packaging issues caused by the wrapper folder on `main`.
 - Enabled Next.js standalone output and runtime package copies under `.next/standalone/node_modules` for Amplify SSR packaging.
 - Runtime prep now replaces only the workspace-root `node_modules/next` symlink with a real package copy, keeping Amplify's SSR artifact below its size limit.
+- The `amplify-deploy` branch uses npm workspaces and `npm install --legacy-peer-deps` for the Amplify build to avoid pnpm symlink issues in Amplify's SSR bundler.
 - The Next.js SSR runtime source still needs a GitHub repo connection; Amplify manual deployments are not appropriate for SSR route-handler apps.

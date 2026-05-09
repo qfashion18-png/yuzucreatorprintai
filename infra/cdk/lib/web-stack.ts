@@ -55,12 +55,10 @@ applications:
       phases:
         preBuild:
           commands:
-            - npm install -g pnpm@11.0.9
-            - pnpm install --frozen-lockfile
+            - npm install --legacy-peer-deps
         build:
           commands:
-            - pnpm --filter web build
-            - bash scripts/prepare-amplify-runtime.sh
+            - npm run build --workspace web
       artifacts:
         baseDirectory: apps/web/.next
         files:

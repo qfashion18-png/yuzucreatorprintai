@@ -15,7 +15,7 @@
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.968.0",
     "@aws-sdk/client-rekognition": "^3.968.0",
-    "@creator-print-ai/core": "workspace:*",
+    "@creator-print-ai/core": "0.1.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {

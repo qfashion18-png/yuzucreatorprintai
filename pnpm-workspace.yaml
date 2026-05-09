@@ -3,6 +3,8 @@ packages:
   - "packages/*"
   - "infra/cdk"
 
+linkWorkspacePackages: true
+
 allowBuilds:
   canvas: true
   esbuild: true
