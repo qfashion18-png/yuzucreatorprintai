@@ -34,4 +34,5 @@
 - Added `scripts/prepare-amplify-runtime.sh` to copy required Next runtime packages into both app-root and `.next` `node_modules` folders for Amplify SSR packaging.
 - Created an `amplify-deploy` branch where the monorepo is at repository root; this avoids Amplify SSR packaging issues caused by the wrapper folder on `main`.
 - Enabled Next.js standalone output and runtime package copies under `.next/standalone/node_modules` for Amplify SSR packaging.
+- Runtime prep now also ensures `node_modules/next` exists at the workspace root because Amplify checks the build root after commands complete.
 - The Next.js SSR runtime source still needs a GitHub repo connection; Amplify manual deployments are not appropriate for SSR route-handler apps.
