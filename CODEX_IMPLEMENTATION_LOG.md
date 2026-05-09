@@ -27,4 +27,5 @@
 - Added CDK context and `scripts/connect-amplify-git.ps1` support for a Git-connected Amplify release job using `https://github.com/qfashion18-png/yuzucreatorprintai.git`.
 - Amplify requires a valid GitHub/OAuth token before it will connect a repository and start a Git-backed SSR build.
 - Git-connected Amplify builds use `creator-print-ai/apps/web` as the monorepo app root because the pushed repository contains the project in a nested folder.
+- Amplify AL2023 did not expose `pnpm` after `corepack prepare`, so the build spec installs `pnpm@11.0.9` explicitly.
 - The Next.js SSR runtime source still needs a GitHub repo connection; Amplify manual deployments are not appropriate for SSR route-handler apps.
