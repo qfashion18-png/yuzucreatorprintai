@@ -54,7 +54,7 @@ The script updates the Amplify app repository, replaces any existing manual `mai
 
 The GitHub repository stores this project in the `creator-print-ai/` folder, so Amplify uses `creator-print-ai/apps/web` as `AMPLIFY_MONOREPO_APP_ROOT`.
 
-AWS Amplify's pnpm monorepo guidance requires `.npmrc` to set `node-linker=hoisted`, and the build spec installs pnpm during `preBuild`.
+AWS Amplify's pnpm monorepo guidance requires `.npmrc` to set `node-linker=hoisted`, and the build spec installs pnpm during `preBuild`. The build spec also uses `buildPath: /` so Amplify runs commands from the repository root while collecting artifacts from `creator-print-ai/apps/web/.next`.
 
 Current deployed infrastructure:
 
