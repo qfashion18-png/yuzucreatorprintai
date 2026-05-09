@@ -60,6 +60,7 @@ applications:
         build:
           commands:
             - cd "$(git rev-parse --show-toplevel)/creator-print-ai" && pnpm --filter web build
+            - cd "$(git rev-parse --show-toplevel)/creator-print-ai" && bash scripts/prepare-amplify-runtime.sh
       artifacts:
         baseDirectory: creator-print-ai/apps/web/.next
         files:
