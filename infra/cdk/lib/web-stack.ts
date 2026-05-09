@@ -29,7 +29,7 @@ export class WebStack extends Stack {
         : {}),
       buildSpec: amplifyBuildSpec(props.envName, props.userPoolId),
       environmentVariables: [
-        { name: "AMPLIFY_MONOREPO_APP_ROOT", value: "creator-print-ai/apps/web" },
+        { name: "AMPLIFY_MONOREPO_APP_ROOT", value: "apps/web" },
         { name: "APP_ENV", value: props.envName },
         { name: "PRINT_PROVIDER", value: "mock" },
         { name: "AI_PROVIDER", value: "mock" },
@@ -49,26 +49,26 @@ export class WebStack extends Stack {
 function amplifyBuildSpec(envName: string, userPoolId: string): string {
   return `version: 1
 applications:
-  - appRoot: creator-print-ai/apps/web
+  - appRoot: apps/web
     frontend:
       buildPath: /
       phases:
         preBuild:
           commands:
             - npm install -g pnpm@11.0.9
-            - cd "$(git rev-parse --show-toplevel)/creator-print-ai" && pnpm install --frozen-lockfile
+            - pnpm install --frozen-lockfile
         build:
           commands:
-            - cd "$(git rev-parse --show-toplevel)/creator-print-ai" && pnpm --filter web build
-            - cd "$(git rev-parse --show-toplevel)/creator-print-ai" && bash scripts/prepare-amplify-runtime.sh
+            - pnpm --filter web build
+            - bash scripts/prepare-amplify-runtime.sh
       artifacts:
-        baseDirectory: creator-print-ai/apps/web/.next
+        baseDirectory: apps/web/.next
         files:
           - '**/*'
       cache:
         paths:
-          - creator-print-ai/node_modules/**/*
-          - creator-print-ai/apps/web/node_modules/**/*
+          - node_modules/**/*
+          - apps/web/node_modules/**/*
     environment:
       variables:
         APP_ENV: ${envName}

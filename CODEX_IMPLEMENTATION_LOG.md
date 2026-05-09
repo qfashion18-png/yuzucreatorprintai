@@ -32,4 +32,5 @@
 - Updated Amplify build specs to use `buildPath: /` and nested artifact paths for the GitHub repo layout.
 - Amplify build commands use `git rev-parse --show-toplevel` so phase working-directory changes do not break nested project paths.
 - Added `scripts/prepare-amplify-runtime.sh` to copy required Next runtime packages into both app-root and `.next` `node_modules` folders for Amplify SSR packaging.
+- Created an `amplify-deploy` branch where the monorepo is at repository root; this avoids Amplify SSR packaging issues caused by the wrapper folder on `main`.
 - The Next.js SSR runtime source still needs a GitHub repo connection; Amplify manual deployments are not appropriate for SSR route-handler apps.
