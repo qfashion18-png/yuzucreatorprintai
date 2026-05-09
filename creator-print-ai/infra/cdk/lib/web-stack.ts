@@ -54,7 +54,7 @@ applications:
       phases:
         preBuild:
           commands:
-            - corepack prepare pnpm@11.0.9 --activate
+            - npm install -g pnpm@11.0.9
             - pnpm install --frozen-lockfile
         build:
           commands:
