@@ -29,7 +29,7 @@ export class WebStack extends Stack {
         : {}),
       buildSpec: amplifyBuildSpec(props.envName, props.userPoolId),
       environmentVariables: [
-        { name: "AMPLIFY_MONOREPO_APP_ROOT", value: "apps/web" },
+        { name: "AMPLIFY_MONOREPO_APP_ROOT", value: "creator-print-ai/apps/web" },
         { name: "APP_ENV", value: props.envName },
         { name: "PRINT_PROVIDER", value: "mock" },
         { name: "AI_PROVIDER", value: "mock" },
@@ -49,7 +49,7 @@ export class WebStack extends Stack {
 function amplifyBuildSpec(envName: string, userPoolId: string): string {
   return `version: 1
 applications:
-  - appRoot: apps/web
+  - appRoot: creator-print-ai/apps/web
     frontend:
       phases:
         preBuild:

@@ -52,6 +52,8 @@ pnpm amplify:connect -- -RepositoryUrl "https://github.com/qfashion18-png/yuzucr
 
 The script updates the Amplify app repository, replaces any existing manual `main` branch, enables auto-build on the new Git-backed branch, and starts a `RELEASE` job without printing the token. Pass `-KeepExistingBranch` only if the branch is already Git-backed.
 
+The GitHub repository stores this project in the `creator-print-ai/` folder, so Amplify uses `creator-print-ai/apps/web` as `AMPLIFY_MONOREPO_APP_ROOT`.
+
 Current deployed infrastructure:
 
 - AWS account: `374587466106`
