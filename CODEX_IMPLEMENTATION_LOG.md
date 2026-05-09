@@ -30,4 +30,5 @@
 - Amplify AL2023 did not expose `pnpm` after `corepack prepare`, so the build spec installs `pnpm@11.0.9` explicitly.
 - Added `.npmrc` with `node-linker=hoisted` for Amplify's pnpm monorepo runtime packaging.
 - Updated Amplify build specs to use `buildPath: /` and nested artifact paths for the GitHub repo layout.
+- Amplify build commands use `$CODEBUILD_SRC_DIR/creator-print-ai` so phase working-directory changes do not break nested project paths.
 - The Next.js SSR runtime source still needs a GitHub repo connection; Amplify manual deployments are not appropriate for SSR route-handler apps.
