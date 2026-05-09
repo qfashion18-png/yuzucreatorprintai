@@ -1,0 +1,26 @@
+{
+  "name": "@creator-print-ai/cdk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "creator-print-ai-cdk": "bin/creator-print-ai-cdk.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "cdk": "cdk",
+    "lint": "eslint lib bin --ext .ts",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.234.0",
+    "constructs": "^10.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.40",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.5"
+  }
+}
