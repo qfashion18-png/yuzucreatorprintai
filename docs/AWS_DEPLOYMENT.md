@@ -50,7 +50,7 @@ Or read the token from Secrets Manager:
 pnpm amplify:connect -- -RepositoryUrl "https://github.com/qfashion18-png/yuzucreatorprintai.git" -GitHubTokenSecretId "creatorprint/amplify/github"
 ```
 
-The script updates the Amplify app repository, enables auto-build on the `main` branch, and starts a `RELEASE` job without printing the token.
+The script updates the Amplify app repository, replaces any existing manual `main` branch, enables auto-build on the new Git-backed branch, and starts a `RELEASE` job without printing the token. Pass `-KeepExistingBranch` only if the branch is already Git-backed.
 
 Current deployed infrastructure:
 

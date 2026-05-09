@@ -6,7 +6,8 @@ param(
   [string]$BranchName = "main",
   [string]$Region = "us-east-1",
   [string]$GitHubTokenSecretId = "",
-  [string]$AccessTokenEnvName = "AMPLIFY_GITHUB_ACCESS_TOKEN"
+  [string]$AccessTokenEnvName = "AMPLIFY_GITHUB_ACCESS_TOKEN",
+  [switch]$KeepExistingBranch
 )
 
 $ErrorActionPreference = "Stop"
@@ -49,6 +50,16 @@ $buildSpecPath = Join-Path (Split-Path -Parent $PSScriptRoot) "amplify.yml"
 $buildSpec = Get-Content -LiteralPath $buildSpecPath -Raw
 
 Write-Host "Connecting Amplify app '$AppId' branch '$BranchName' to '$repo' in '$Region'."
+
+$existingBranch = Get-AMPBranchList -AppId $AppId -Region $Region |
+  Where-Object { $_.BranchName -eq $BranchName } |
+  Select-Object -First 1
+
+if ($existingBranch -and -not $KeepExistingBranch) {
+  Write-Host "Replacing existing Amplify branch '$BranchName' so the app can switch from manual deploys to Git builds."
+  Remove-AMPBranch -AppId $AppId -BranchName $BranchName -Region $Region -Force | Out-Null
+}
+
 Update-AMPApp `
   -AppId $AppId `
   -Repository $repo `
@@ -58,13 +69,24 @@ Update-AMPApp `
   -Region $Region `
   -Force | Out-Null
 
-Update-AMPBranch `
-  -AppId $AppId `
-  -BranchName $BranchName `
-  -Framework "Next.js - SSR" `
-  -EnableAutoBuild $true `
-  -Region $Region `
-  -Force | Out-Null
+if ($existingBranch -and $KeepExistingBranch) {
+  Update-AMPBranch `
+    -AppId $AppId `
+    -BranchName $BranchName `
+    -Framework "Next.js - SSR" `
+    -EnableAutoBuild $true `
+    -Region $Region `
+    -Force | Out-Null
+} else {
+  New-AMPBranch `
+    -AppId $AppId `
+    -BranchName $BranchName `
+    -Framework "Next.js - SSR" `
+    -Stage "DEVELOPMENT" `
+    -EnableAutoBuild $true `
+    -Region $Region `
+    -Force | Out-Null
+}
 
 $job = Start-AMPJob `
   -AppId $AppId `
