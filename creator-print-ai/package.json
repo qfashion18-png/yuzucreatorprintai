@@ -1,0 +1,30 @@
+{
+  "name": "creator-print-ai",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.0.9",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "seed": "tsx scripts/seed.ts",
+    "smoke": "tsx scripts/playwright-smoke.ts",
+    "amplify:connect": "powershell -ExecutionPolicy Bypass -File scripts/connect-amplify-git.ps1",
+    "cdk:synth": "pnpm --dir infra/cdk cdk synth",
+    "cdk:diff": "pnpm --dir infra/cdk cdk diff",
+    "cdk:deploy": "pnpm --dir infra/cdk cdk deploy --all"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^20.19.40",
+    "eslint": "^9.39.4",
+    "prettier": "^3.8.1",
+    "tsx": "^4.21.0",
+    "turbo": "^2.7.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.59.2",
+    "vitest": "^4.0.16"
+  }
+}

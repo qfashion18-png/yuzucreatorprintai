@@ -1,0 +1,25 @@
+{
+  "name": "@creator-print-ai/ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src test --ext .ts",
+    "test": "vitest run test",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.968.0",
+    "@aws-sdk/client-rekognition": "^3.968.0",
+    "@creator-print-ai/core": "workspace:*",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  }
+}
