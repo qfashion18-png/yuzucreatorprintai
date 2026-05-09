@@ -51,7 +51,7 @@ Do not deploy until AWS account, region, permissions, and environment names are 
 To connect Amplify to GitHub for a Next.js SSR build, create/push the repo, store a GitHub token in Secrets Manager, then run:
 
 ```powershell
-pnpm amplify:connect -- -RepositoryUrl "https://github.com/qfashion18-png/creator-print-ai" -GitHubTokenSecretId "creatorprint/amplify/github"
+pnpm amplify:connect -- -RepositoryUrl "https://github.com/qfashion18-png/yuzucreatorprintai.git" -GitHubTokenSecretId "creatorprint/amplify/github"
 ```
 
 ## Known Limitations
