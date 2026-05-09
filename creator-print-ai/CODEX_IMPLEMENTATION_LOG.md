@@ -24,5 +24,5 @@
 - Local AWS CLI had TLS/certificate validation issues in this environment, so deployment used AWS Tools for PowerShell with credentials loaded ephemerally from the provided CSV.
 - Deployed `CreatorPrintCore-dev`, `CreatorPrintAi-dev`, and `CreatorPrintWeb-dev` to AWS account `374587466106` in `us-east-1`.
 - Created Amplify app `dfasxx3um10jb` with branch `main`; the branch URL responds at `https://main.dfasxx3um10jb.amplifyapp.com`.
-- Added CDK context and `scripts/connect-amplify-git.ps1` support for a Git-connected Amplify release job once a GitHub repo and token are available.
+- Added CDK context and `scripts/connect-amplify-git.ps1` support for a Git-connected Amplify release job using `https://github.com/qfashion18-png/yuzucreatorprintai.git`.
 - The Next.js SSR runtime source still needs a GitHub repo connection; Amplify manual deployments are not appropriate for SSR route-handler apps.

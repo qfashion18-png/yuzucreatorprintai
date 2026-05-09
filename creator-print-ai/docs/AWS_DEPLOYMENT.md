@@ -27,7 +27,7 @@ The CDK `WebStack` can optionally connect Amplify to GitHub when both values are
 
 ```bash
 pnpm cdk:deploy -- \
-  -c amplifyRepository=https://github.com/qfashion18-png/creator-print-ai \
+  -c amplifyRepository=https://github.com/qfashion18-png/yuzucreatorprintai.git \
   -c amplifyAccessTokenSecretId=creatorprint/amplify/github
 ```
 
@@ -41,13 +41,13 @@ For the already-created Amplify app, use the safe helper script after the source
 
 ```powershell
 $env:AMPLIFY_GITHUB_ACCESS_TOKEN = "<token for this shell only>"
-pnpm amplify:connect -- -RepositoryUrl "https://github.com/qfashion18-png/creator-print-ai"
+pnpm amplify:connect -- -RepositoryUrl "https://github.com/qfashion18-png/yuzucreatorprintai.git"
 ```
 
 Or read the token from Secrets Manager:
 
 ```powershell
-pnpm amplify:connect -- -RepositoryUrl "https://github.com/qfashion18-png/creator-print-ai" -GitHubTokenSecretId "creatorprint/amplify/github"
+pnpm amplify:connect -- -RepositoryUrl "https://github.com/qfashion18-png/yuzucreatorprintai.git" -GitHubTokenSecretId "creatorprint/amplify/github"
 ```
 
 The script updates the Amplify app repository, enables auto-build on the `main` branch, and starts a `RELEASE` job without printing the token.
