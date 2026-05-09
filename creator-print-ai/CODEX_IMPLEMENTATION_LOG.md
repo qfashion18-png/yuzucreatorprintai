@@ -29,4 +29,5 @@
 - Git-connected Amplify builds use `creator-print-ai/apps/web` as the monorepo app root because the pushed repository contains the project in a nested folder.
 - Amplify AL2023 did not expose `pnpm` after `corepack prepare`, so the build spec installs `pnpm@11.0.9` explicitly.
 - Added `.npmrc` with `node-linker=hoisted` for Amplify's pnpm monorepo runtime packaging.
+- Updated Amplify build specs to use `buildPath: /` and nested artifact paths for the GitHub repo layout.
 - The Next.js SSR runtime source still needs a GitHub repo connection; Amplify manual deployments are not appropriate for SSR route-handler apps.
