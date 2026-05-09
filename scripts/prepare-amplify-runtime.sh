@@ -27,13 +27,17 @@ copy_package() {
     return 0
   fi
 
-  if [ "$(cd "$found" && pwd)" = "$(cd "$target/$(dirname "$package_name")" 2>/dev/null && pwd)/$(basename "$package_name")" ]; then
+  local target_path="$target/$package_name"
+  local real_source
+  real_source="$(cd "$found" && pwd -P)"
+
+  if [ -e "$target_path" ] && [ ! -L "$target_path" ] && [ "$(cd "$target_path" && pwd -P)" = "$real_source" ]; then
     return 0
   fi
 
-  mkdir -p "$(dirname "$target/$package_name")"
-  rm -rf "$target/$package_name"
-  cp -RL "$found" "$target/$package_name"
+  mkdir -p "$(dirname "$target_path")"
+  rm -rf "$target_path"
+  cp -RL "$real_source" "$target_path"
 }
 
 for package_name in next @next react react-dom sharp styled-jsx; do
