@@ -13,7 +13,9 @@ import { QuoteSummary } from "@/components/QuoteSummary";
 import { TextTool } from "@/components/TextTool";
 import { UploadedAsset, UploadDropzone } from "@/components/UploadDropzone";
 import { formatMoney } from "@/lib/utils";
+import { promoVideoPosterImage } from "@/lib/visual-assets";
 import { Download, FileCheck2, Save, ShoppingCart, Video } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type FabricObject = {
@@ -41,15 +43,25 @@ type FabricCanvas = {
 };
 
 type FabricModule = {
-  Canvas: new (element: HTMLCanvasElement, options: Record<string, unknown>) => FabricCanvas;
+  Canvas: new (
+    element: HTMLCanvasElement,
+    options: Record<string, unknown>,
+  ) => FabricCanvas;
   Rect: new (options: Record<string, unknown>) => FabricObject;
   Textbox: new (text: string, options: Record<string, unknown>) => FabricObject;
-  Group: new (objects: FabricObject[], options: Record<string, unknown>) => FabricObject;
+  Group: new (
+    objects: FabricObject[],
+    options: Record<string, unknown>,
+  ) => FabricObject;
   FabricImage?: {
-    fromURL: (url: string) => Promise<FabricObject & { width: number; height: number }>;
+    fromURL: (
+      url: string,
+    ) => Promise<FabricObject & { width: number; height: number }>;
   };
   Image?: {
-    fromURL: (url: string) => Promise<FabricObject & { width: number; height: number }>;
+    fromURL: (
+      url: string,
+    ) => Promise<FabricObject & { width: number; height: number }>;
   };
 };
 
@@ -69,9 +81,16 @@ export function StudioWorkspace({
   const [previewUrl, setPreviewUrl] = useState<string>();
   const [quote, setQuote] = useState<QuoteResult>();
   const [promoStatus, setPromoStatus] = useState<string>();
+  const [promoPreviewUrl, setPromoPreviewUrl] = useState<string>();
 
   const drawGuides = useCallback(
-    (fabric: FabricModule, canvas: FabricCanvas, scale: number, width: number, height: number) => {
+    (
+      fabric: FabricModule,
+      canvas: FabricCanvas,
+      scale: number,
+      width: number,
+      height: number,
+    ) => {
       const safe = template.safeZoneIn * scale;
       const bleed = template.bleedIn * scale;
 
@@ -116,7 +135,10 @@ export function StudioWorkspace({
 
       const maxWidth = 780;
       const maxHeight = 620;
-      const scale = Math.min(maxWidth / template.widthIn, maxHeight / template.heightIn);
+      const scale = Math.min(
+        maxWidth / template.widthIn,
+        maxHeight / template.heightIn,
+      );
       const width = Math.round(template.widthIn * scale);
       const height = Math.round(template.heightIn * scale);
       const canvas = new fabric.Canvas(canvasElementRef.current, {
@@ -139,13 +161,59 @@ export function StudioWorkspace({
               width: Math.max(120, slot.width / (template.dpi / scale)),
               fontSize: 24,
               fontWeight: "800",
-              fill: template.backgroundColor === "#071018" || template.backgroundColor === "#101820" ? "#ffffff" : "#06131a",
+              fill:
+                template.backgroundColor === "#071018" ||
+                template.backgroundColor === "#101820"
+                  ? "#ffffff"
+                  : "#06131a",
+              name: slot.id,
+            }),
+          );
+        }
+        if (slot.type === "image") {
+          const left = slot.x / (template.dpi / scale);
+          const top = slot.y / (template.dpi / scale);
+          const width = Math.max(160, slot.width / (template.dpi / scale));
+          const height = Math.max(120, slot.height / (template.dpi / scale));
+          const frame = new fabric.Rect({
+            left: 0,
+            top: 0,
+            width,
+            height,
+            fill: "#ecfeff",
+            stroke: "#00a9b7",
+            strokeDashArray: [10, 10],
+            strokeWidth: 2,
+            rx: 14,
+            ry: 14,
+            name: `${slot.id}-frame`,
+          });
+          const label = new fabric.Textbox("Drop art", {
+            left: 18,
+            top: Math.max(18, height / 2 - 18),
+            width: Math.max(120, width - 36),
+            fontSize: 24,
+            fontWeight: "800",
+            textAlign: "center",
+            fill: "#007f88",
+            name: `${slot.id}-label`,
+          });
+          canvas.add(
+            new fabric.Group([frame, label], {
+              left,
+              top,
               name: slot.id,
             }),
           );
         }
         if (slot.type === "qr") {
-          addQrShape(canvas, fabric, slot.defaultValue ?? "https://creatorprint.ai", slot.x / (template.dpi / scale), slot.y / (template.dpi / scale));
+          addQrShape(
+            canvas,
+            fabric,
+            slot.defaultValue ?? "https://creatorprint.ai",
+            slot.x / (template.dpi / scale),
+            slot.y / (template.dpi / scale),
+          );
         }
         if (slot.type === "shape") {
           canvas.add(
@@ -179,8 +247,14 @@ export function StudioWorkspace({
     setLayers(
       canvas
         .getObjects()
-        .filter((object: FabricObject) => !String(object.name ?? "").startsWith("guide"))
-        .map((object: FabricObject, index: number) => object.name ?? `${object.type ?? "Layer"} ${index + 1}`),
+        .filter(
+          (object: FabricObject) =>
+            !String(object.name ?? "").startsWith("guide"),
+        )
+        .map(
+          (object: FabricObject, index: number) =>
+            object.name ?? `${object.type ?? "Layer"} ${index + 1}`,
+        ),
     );
   }
 
@@ -281,10 +355,18 @@ export function StudioWorkspace({
 
     const objects = canvas
       .getObjects()
-      .filter((object: FabricObject) => !String(object.name ?? "").startsWith("guide"))
+      .filter(
+        (object: FabricObject) =>
+          !String(object.name ?? "").startsWith("guide"),
+      )
       .map((object: FabricObject, index: number) => ({
         id: object.name ?? `object_${index}`,
-        type: object.type === "image" ? "image" : object.type === "textbox" ? "text" : "shape",
+        type:
+          object.type === "image"
+            ? "image"
+            : object.type === "textbox"
+              ? "text"
+              : "shape",
         x: object.left ?? 0,
         y: object.top ?? 0,
         width: (object.width ?? 1) * (object.scaleX ?? 1),
@@ -375,7 +457,12 @@ export function StudioWorkspace({
       }),
     });
     const payload = await response.json();
-    setPromoStatus(payload.ok ? "Promo composition ready" : payload.error.message);
+    if (payload.ok) {
+      setPromoStatus("Promo composition ready");
+      setPromoPreviewUrl(promoVideoPosterImage.src);
+    } else {
+      setPromoStatus(payload.error.message);
+    }
   }
 
   return (
@@ -388,7 +475,9 @@ export function StudioWorkspace({
       <section className="min-w-0 rounded border border-slate-200 bg-white p-4 shadow-sm">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-black tracking-[0]">{template.name}</h1>
+            <h1 className="text-2xl font-black tracking-[0]">
+              {template.name}
+            </h1>
             <p className="text-sm text-slate-600">
               {template.widthIn} x {template.heightIn} in, {template.dpi} DPI
             </p>
@@ -396,22 +485,37 @@ export function StudioWorkspace({
           <div className="flex flex-wrap gap-2">
             <TextTool onAddText={addText} />
             <QrCodeTool onAddQr={addQr} />
-            <button type="button" onClick={() => void saveDesign()} className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-sm font-black">
+            <button
+              type="button"
+              onClick={() => void saveDesign()}
+              className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-sm font-black"
+            >
               <Save className="size-4" aria-hidden="true" />
               Save
             </button>
-            <button type="button" onClick={() => void exportProof()} className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-sm font-black">
+            <button
+              type="button"
+              onClick={() => void exportProof()}
+              className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-2 text-sm font-black"
+            >
               <Download className="size-4" aria-hidden="true" />
               Proof
             </button>
           </div>
         </div>
         <div className="overflow-auto rounded bg-slate-100 p-4">
-          <canvas ref={canvasElementRef} className="mx-auto bg-white shadow-xl" />
+          <canvas
+            ref={canvasElementRef}
+            className="mx-auto bg-white shadow-xl"
+          />
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <BleedSafeZoneOverlay />
-          {quote ? <span className="text-sm font-black">Mock quote: {formatMoney(quote.totalCents)}</span> : null}
+          {quote ? (
+            <span className="text-sm font-black">
+              Mock quote: {formatMoney(quote.totalCents)}
+            </span>
+          ) : null}
         </div>
       </section>
       <aside className="space-y-4">
@@ -420,29 +524,66 @@ export function StudioWorkspace({
         <ProofPreview previewUrl={previewUrl} />
         <QuoteSummary quote={quote} />
         <div className="grid gap-2">
-          <button type="button" onClick={() => void runPreflightCheck()} className="inline-flex items-center justify-center gap-2 rounded bg-[#06131a] px-4 py-3 text-sm font-black text-white">
+          <button
+            type="button"
+            onClick={() => void runPreflightCheck()}
+            className="inline-flex items-center justify-center gap-2 rounded bg-[#06131a] px-4 py-3 text-sm font-black text-white"
+          >
             <FileCheck2 className="size-4" aria-hidden="true" />
             Run preflight
           </button>
-          <button type="button" onClick={() => void getQuote()} className="inline-flex items-center justify-center gap-2 rounded bg-[#d5ff5f] px-4 py-3 text-sm font-black text-[#06131a]">
+          <button
+            type="button"
+            onClick={() => void getQuote()}
+            className="inline-flex items-center justify-center gap-2 rounded bg-[#d5ff5f] px-4 py-3 text-sm font-black text-[#06131a]"
+          >
             Generate quote
           </button>
-          <button type="button" onClick={() => void addToCart()} className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-3 text-sm font-black">
+          <button
+            type="button"
+            onClick={() => void addToCart()}
+            className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-3 text-sm font-black"
+          >
             <ShoppingCart className="size-4" aria-hidden="true" />
             Add to cart
           </button>
-          <button type="button" onClick={() => void generatePromo()} className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-3 text-sm font-black">
+          <button
+            type="button"
+            onClick={() => void generatePromo()}
+            className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-3 text-sm font-black"
+          >
             <Video className="size-4" aria-hidden="true" />
             Generate promo video
           </button>
-          {promoStatus ? <p className="text-xs font-semibold text-[#007f88]">{promoStatus}</p> : null}
+          {promoStatus ? (
+            <p className="text-xs font-semibold text-[#007f88]">
+              {promoStatus}
+            </p>
+          ) : null}
+          {promoPreviewUrl ? (
+            <div className="relative aspect-[9/16] overflow-hidden rounded border border-slate-200 bg-[#06131a]">
+              <Image
+                src={promoPreviewUrl}
+                alt={promoVideoPosterImage.alt}
+                fill
+                sizes="320px"
+                className="object-cover"
+              />
+            </div>
+          ) : null}
         </div>
       </aside>
     </main>
   );
 }
 
-function addQrShape(canvas: FabricCanvas, fabric: FabricModule, url: string, left: number, top: number) {
+function addQrShape(
+  canvas: FabricCanvas,
+  fabric: FabricModule,
+  url: string,
+  left: number,
+  top: number,
+) {
   const rect = new fabric.Rect({
     width: 116,
     height: 116,

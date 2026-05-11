@@ -14,6 +14,7 @@
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
+    "assets:generate": "node scripts/generate-visual-assets.mjs",
     "seed": "tsx scripts/seed.ts",
     "smoke": "tsx scripts/playwright-smoke.ts",
     "amplify:connect": "powershell -ExecutionPolicy Bypass -File scripts/connect-amplify-git.ps1",
