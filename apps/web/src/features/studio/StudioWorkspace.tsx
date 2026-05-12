@@ -1,5 +1,6 @@
 "use client";
 
+import type { DesignEditAction } from "@creator-print-ai/ai";
 import type { PreflightResult, PrintTemplate } from "@creator-print-ai/core";
 import type { QuoteResult } from "@creator-print-ai/print-provider";
 import { AIAssistantPanel } from "@/components/AIAssistantPanel";
@@ -65,6 +66,10 @@ type FabricModule = {
   };
 };
 
+type StudioAsset = UploadedAsset & {
+  type?: "image" | "generated_image";
+};
+
 export function StudioWorkspace({
   designId,
   template,
@@ -76,7 +81,7 @@ export function StudioWorkspace({
   const canvasRef = useRef<FabricCanvas | null>(null);
   const fabricRef = useRef<FabricModule | null>(null);
   const [layers, setLayers] = useState<string[]>(["Background", "Guides"]);
-  const [assets, setAssets] = useState<UploadedAsset[]>([]);
+  const [assets, setAssets] = useState<StudioAsset[]>([]);
   const [preflight, setPreflight] = useState<PreflightResult>();
   const [previewUrl, setPreviewUrl] = useState<string>();
   const [quote, setQuote] = useState<QuoteResult>();
@@ -97,6 +102,8 @@ export function StudioWorkspace({
       const trimRect = new fabric.Rect({
         left: bleed,
         top: bleed,
+        originX: "left",
+        originY: "top",
         width: width - bleed * 2,
         height: height - bleed * 2,
         fill: "transparent",
@@ -109,6 +116,8 @@ export function StudioWorkspace({
       const safeRect = new fabric.Rect({
         left: safe,
         top: safe,
+        originX: "left",
+        originY: "top",
         width: width - safe * 2,
         height: height - safe * 2,
         fill: "transparent",
@@ -158,6 +167,8 @@ export function StudioWorkspace({
             new fabric.Textbox(slot.defaultValue ?? "Creator drop", {
               left: slot.x / (template.dpi / scale),
               top: slot.y / (template.dpi / scale),
+              originX: "left",
+              originY: "top",
               width: Math.max(120, slot.width / (template.dpi / scale)),
               fontSize: 24,
               fontWeight: "800",
@@ -175,34 +186,35 @@ export function StudioWorkspace({
           const top = slot.y / (template.dpi / scale);
           const width = Math.max(160, slot.width / (template.dpi / scale));
           const height = Math.max(120, slot.height / (template.dpi / scale));
-          const frame = new fabric.Rect({
-            left: 0,
-            top: 0,
-            width,
-            height,
-            fill: "#ecfeff",
-            stroke: "#00a9b7",
-            strokeDashArray: [10, 10],
-            strokeWidth: 2,
-            rx: 14,
-            ry: 14,
-            name: `${slot.id}-frame`,
-          });
-          const label = new fabric.Textbox("Drop art", {
-            left: 18,
-            top: Math.max(18, height / 2 - 18),
-            width: Math.max(120, width - 36),
-            fontSize: 24,
-            fontWeight: "800",
-            textAlign: "center",
-            fill: "#007f88",
-            name: `${slot.id}-label`,
-          });
           canvas.add(
-            new fabric.Group([frame, label], {
+            new fabric.Rect({
               left,
               top,
+              originX: "left",
+              originY: "top",
+              width,
+              height,
+              fill: "#00a9b7",
+              stroke: "#06131a",
+              strokeDashArray: [10, 10],
+              strokeWidth: 5,
+              rx: 14,
+              ry: 14,
               name: slot.id,
+            }),
+          );
+          canvas.add(
+            new fabric.Textbox("Drop art", {
+              left: left + 18,
+              top: top + Math.max(18, height / 2 - 18),
+              originX: "left",
+              originY: "top",
+              width: Math.max(120, width - 36),
+              fontSize: 30,
+              fontWeight: "800",
+              textAlign: "center",
+              fill: "#ffffff",
+              name: `${slot.id}-label`,
             }),
           );
         }
@@ -220,6 +232,8 @@ export function StudioWorkspace({
             new fabric.Rect({
               left: slot.x / (template.dpi / scale),
               top: slot.y / (template.dpi / scale),
+              originX: "left",
+              originY: "top",
               width: Math.max(120, slot.width / (template.dpi / scale)),
               height: Math.max(80, slot.height / (template.dpi / scale)),
               fill: "#d5ff5f",
@@ -230,6 +244,7 @@ export function StudioWorkspace({
           );
         }
       }
+      canvas.requestRenderAll();
       refreshLayers(canvas);
     }
 
@@ -247,10 +262,14 @@ export function StudioWorkspace({
     setLayers(
       canvas
         .getObjects()
-        .filter(
-          (object: FabricObject) =>
-            !String(object.name ?? "").startsWith("guide"),
-        )
+        .filter((object: FabricObject) => {
+          const name = String(object.name ?? "");
+          return (
+            !name.startsWith("guide") &&
+            !name.endsWith("-label") &&
+            name !== "qr-block"
+          );
+        })
         .map(
           (object: FabricObject, index: number) =>
             object.name ?? `${object.type ?? "Layer"} ${index + 1}`,
@@ -267,6 +286,8 @@ export function StudioWorkspace({
       new fabric.Textbox(value, {
         left: 80,
         top: 80,
+        originX: "left",
+        originY: "top",
         width: 260,
         fontSize: 32,
         fontWeight: "800",
@@ -295,6 +316,10 @@ export function StudioWorkspace({
   }
 
   async function addUploadedImage(asset: UploadedAsset) {
+    await addImageAsset({ ...asset, type: "image" });
+  }
+
+  async function addImageAsset(asset: StudioAsset) {
     const canvas = canvasRef.current;
     const fabric = fabricRef.current;
     if (!canvas || !fabric) return;
@@ -305,6 +330,8 @@ export function StudioWorkspace({
     image.set({
       left: 80,
       top: 100,
+      originX: "left",
+      originY: "top",
       scaleX: 240 / image.width,
       scaleY: 240 / image.height,
       name: asset.fileName,
@@ -314,6 +341,40 @@ export function StudioWorkspace({
     canvas.requestRenderAll();
     setAssets((current) => [...current, asset]);
     refreshLayers();
+  }
+
+  async function applyAssistantActions(actions: DesignEditAction[]) {
+    for (const action of actions) {
+      if (action.type === "add_text") {
+        addText(action.text);
+      }
+
+      if (action.type === "set_background") {
+        setBackground(action.color);
+      }
+
+      if (action.type === "add_qr") {
+        addQr(action.url);
+      }
+
+      if (action.type === "generate_image") {
+        const response = await fetch("/api/ai/generate-image", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ prompt: action.prompt, size: "square" }),
+        });
+        const payload = await response.json();
+
+        if (payload.ok && payload.data.imageUrl) {
+          await addImageAsset({
+            dataUrl: payload.data.imageUrl,
+            fileName: "AI generated artwork",
+            mimeType: "image/png",
+            type: "generated_image",
+          });
+        }
+      }
+    }
   }
 
   async function saveDesign() {
@@ -338,7 +399,7 @@ export function StudioWorkspace({
         fabricJson: canvas.toJSON(["name"]),
         assets: assets.map((asset, index) => ({
           id: `asset_${index}`,
-          type: "image",
+          type: asset.type ?? "image",
           url: asset.dataUrl,
           widthPx: asset.widthPx,
           heightPx: asset.heightPx,
@@ -433,7 +494,7 @@ export function StudioWorkspace({
   }
 
   async function addToCart() {
-    await fetch("/api/cart", {
+    const response = await fetch("/api/cart", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -443,6 +504,7 @@ export function StudioWorkspace({
         options: { finish: "matte" },
       }),
     });
+    if (response.ok) await getQuote();
   }
 
   async function generatePromo() {
@@ -506,7 +568,7 @@ export function StudioWorkspace({
         <div className="overflow-auto rounded bg-slate-100 p-4">
           <canvas
             ref={canvasElementRef}
-            className="mx-auto bg-white shadow-xl"
+            className="mx-auto"
           />
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -519,7 +581,13 @@ export function StudioWorkspace({
         </div>
       </section>
       <aside className="space-y-4">
-        <AIAssistantPanel />
+        <AIAssistantPanel
+          designId={designId}
+          layers={layers}
+          productSlug={template.productSlug}
+          templateId={template.id}
+          onApplyActions={applyAssistantActions}
+        />
         <PreflightPanel result={preflight} />
         <ProofPreview previewUrl={previewUrl} />
         <QuoteSummary quote={quote} />
@@ -587,26 +655,44 @@ function addQrShape(
   const rect = new fabric.Rect({
     width: 116,
     height: 116,
-    fill: "#ffffff",
-    stroke: "#06131a",
-    strokeWidth: 4,
-    rx: 4,
-    ry: 4,
-    name: "QR code",
-  });
-  const label = new fabric.Textbox("QR", {
-    left: 32,
-    top: 38,
-    width: 80,
-    fontSize: 26,
-    fontWeight: "900",
-    fill: "#06131a",
-    name: "QR label",
-  });
-  const group = new fabric.Group([rect, label], {
     left,
     top,
+    originX: "left",
+    originY: "top",
+    fill: "#ffffff",
+    stroke: "#06131a",
+    strokeWidth: 3,
     name: `QR ${url}`,
   });
-  canvas.add(group);
+  const finderA = new fabric.Rect({
+    width: 24,
+    height: 24,
+    left: left + 14,
+    top: top + 14,
+    originX: "left",
+    originY: "top",
+    fill: "#06131a",
+    name: "qr-block",
+  });
+  const finderB = new fabric.Rect({
+    width: 24,
+    height: 24,
+    left: left + 78,
+    top: top + 14,
+    originX: "left",
+    originY: "top",
+    fill: "#06131a",
+    name: "qr-block",
+  });
+  const finderC = new fabric.Rect({
+    width: 24,
+    height: 24,
+    left: left + 14,
+    top: top + 78,
+    originX: "left",
+    originY: "top",
+    fill: "#06131a",
+    name: "qr-block",
+  });
+  canvas.add(rect, finderA, finderB, finderC);
 }

@@ -32,6 +32,27 @@ export type EditImageInput = {
 
 export type EditedImageResult = GeneratedImageResult;
 
+export type DesignEditAction =
+  | { type: "add_text"; text: string }
+  | { type: "set_background"; color: string }
+  | { type: "add_qr"; url: string }
+  | { type: "generate_image"; prompt: string };
+
+export type PlanDesignEditsInput = {
+  instruction: string;
+  context?: {
+    designId?: string;
+    productSlug?: string;
+    templateId?: string;
+    layers?: string[];
+  };
+};
+
+export type PlanDesignEditsResult = {
+  summary: string;
+  actions: DesignEditAction[];
+};
+
 export type ImprovePromptInput = {
   prompt: string;
   audience?: string;
@@ -54,9 +75,12 @@ export type CopyResult = {
 };
 
 export interface AiDesignAssistant {
-  recommendProducts(input: RecommendProductsInput): Promise<ProductRecommendation[]>;
+  recommendProducts(
+    input: RecommendProductsInput,
+  ): Promise<ProductRecommendation[]>;
   generateImage(input: GenerateImageInput): Promise<GeneratedImageResult>;
   editImage(input: EditImageInput): Promise<EditedImageResult>;
+  planDesignEdits(input: PlanDesignEditsInput): Promise<PlanDesignEditsResult>;
   improvePrompt(input: ImprovePromptInput): Promise<PromptResult>;
   writeProductCopy(input: CopyInput): Promise<CopyResult>;
   runPreflightNarration(input: PreflightResult): Promise<string>;

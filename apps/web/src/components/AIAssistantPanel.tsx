@@ -1,23 +1,62 @@
 "use client";
 
+import type { DesignEditAction } from "@creator-print-ai/ai";
 import { Bot, WandSparkles } from "lucide-react";
 import { useState } from "react";
 
-export function AIAssistantPanel() {
+export function AIAssistantPanel({
+  designId,
+  layers,
+  productSlug,
+  templateId,
+  onApplyActions,
+}: {
+  designId?: string;
+  layers?: string[];
+  productSlug?: string;
+  templateId?: string;
+  onApplyActions?: (actions: DesignEditAction[]) => Promise<void> | void;
+}) {
   const [message, setMessage] = useState("Make this merch-ready");
-  const [reply, setReply] = useState("Ask for sticker ideas, launch copy, QR CTAs, or preflight help.");
+  const [reply, setReply] = useState(
+    "Ask for sticker ideas, launch copy, QR CTAs, or preflight help.",
+  );
   const [loading, setLoading] = useState(false);
 
   async function askAssistant() {
     setLoading(true);
-    const response = await fetch("/api/ai/chat", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ message }),
-    });
-    const payload = await response.json();
-    setReply(payload.ok ? payload.data.message : payload.error.message);
-    setLoading(false);
+    try {
+      const response = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          message,
+          designId,
+          productSlug,
+          templateId,
+          layers,
+          allowDirectEdits: Boolean(onApplyActions),
+        }),
+      });
+      const payload = await response.json();
+
+      if (!payload.ok) {
+        setReply(payload.error.message);
+        return;
+      }
+
+      const actions = Array.isArray(payload.data.actions)
+        ? (payload.data.actions as DesignEditAction[])
+        : [];
+
+      if (actions.length > 0) {
+        await onApplyActions?.(actions);
+      }
+
+      setReply(payload.data.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -37,7 +76,7 @@ export function AIAssistantPanel() {
         className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded bg-[#06131a] px-3 py-2 text-sm font-black text-white"
       >
         <WandSparkles className="size-4" aria-hidden="true" />
-        {loading ? "Thinking" : "Ask AI"}
+        {loading ? "Thinking" : onApplyActions ? "Edit with AI" : "Ask AI"}
       </button>
       <p className="mt-3 text-sm leading-6 text-slate-600">{reply}</p>
     </section>
