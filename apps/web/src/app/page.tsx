@@ -86,8 +86,12 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.slug} product={product} />
+          {featuredProducts.map((product, index) => (
+            <ProductCard
+              key={product.slug}
+              product={product}
+              priority={index < 3}
+            />
           ))}
         </div>
       </section>

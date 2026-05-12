@@ -1,12 +1,12 @@
 import { TemplateCard } from "@/components/TemplateCard";
+import { RotatingThemeImage } from "@/components/RotatingThemeImage";
 import { formatMoney } from "@/lib/utils";
-import { productImage } from "@/lib/visual-assets";
+import { productThemeImages } from "@/lib/visual-assets";
 import {
   getProductBySlug,
   getTemplatesByProduct,
 } from "@creator-print-ai/core";
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -21,7 +21,7 @@ export default async function ProductDetailPage({
 
   const productTemplates = getTemplatesByProduct(slug);
   const firstTemplate = productTemplates[0];
-  const image = productImage(product.slug, product.name);
+  const images = productThemeImages(product.slug, product.name);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -62,16 +62,13 @@ export default async function ProductDetailPage({
           </div>
         </div>
         <aside className="overflow-hidden rounded bg-[#f4fbff]">
-          <div className="relative aspect-[4/3]">
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              priority
-              sizes="(min-width: 1024px) 420px, 92vw"
-              className="object-cover"
-            />
-          </div>
+          <RotatingThemeImage
+            images={images}
+            seed={`${product.slug}-detail`}
+            priority
+            sizes="(min-width: 1024px) 420px, 92vw"
+            className="aspect-[4/3]"
+          />
           <div className="p-5">
             <dl className="grid gap-4 text-sm">
               <div>

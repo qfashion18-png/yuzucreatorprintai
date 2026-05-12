@@ -1,25 +1,29 @@
 import type { Product } from "@creator-print-ai/core";
 import { formatMoney } from "@/lib/utils";
-import { productImage } from "@/lib/visual-assets";
+import { productThemeImages } from "@/lib/visual-assets";
 import { ArrowRight, BadgeDollarSign } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import { RotatingThemeImage } from "./RotatingThemeImage";
 
-export function ProductCard({ product }: { product: Product }) {
-  const image = productImage(product.slug, product.name);
+export function ProductCard({
+  product,
+  priority = false,
+}: {
+  product: Product;
+  priority?: boolean;
+}) {
+  const images = productThemeImages(product.slug, product.name);
 
   return (
     <article className="group flex h-full flex-col justify-between rounded border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#00a9b7] hover:shadow-md">
       <div>
-        <div className="relative mb-5 aspect-[4/3] overflow-hidden rounded bg-[#f4fbff]">
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            sizes="(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 92vw"
-            className="object-cover transition duration-500 group-hover:scale-[1.03]"
-          />
-        </div>
+        <RotatingThemeImage
+          images={images}
+          seed={product.slug}
+          priority={priority}
+          sizes="(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 92vw"
+          className="mb-5 aspect-[4/3] rounded"
+        />
         <h3 className="text-xl font-black tracking-[0]">{product.name}</h3>
         <p className="mt-2 text-sm leading-6 text-slate-600">
           {product.description}

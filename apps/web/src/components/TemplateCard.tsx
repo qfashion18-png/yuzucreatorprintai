@@ -1,23 +1,20 @@
 import type { PrintTemplate } from "@creator-print-ai/core";
-import { templateImage } from "@/lib/visual-assets";
+import { templateThemeImages } from "@/lib/visual-assets";
 import { ArrowRight, LayoutTemplate } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import { RotatingThemeImage } from "./RotatingThemeImage";
 
 export function TemplateCard({ template }: { template: PrintTemplate }) {
-  const image = templateImage(template.id, template.name);
+  const images = templateThemeImages(template.productSlug, template.name);
 
   return (
     <article className="rounded border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded border border-slate-100 bg-[#f4fbff]">
-        <Image
-          src={image.src}
-          alt={image.alt}
-          fill
-          sizes="(min-width: 1024px) 31vw, (min-width: 768px) 46vw, 92vw"
-          className="object-cover transition duration-500 hover:scale-[1.02]"
-        />
-      </div>
+      <RotatingThemeImage
+        images={images}
+        seed={template.id}
+        sizes="(min-width: 1024px) 31vw, (min-width: 768px) 46vw, 92vw"
+        className="mb-4 aspect-[4/3] rounded border border-slate-100"
+      />
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="flex items-center gap-2 text-xs font-bold uppercase text-[#007f88]">
