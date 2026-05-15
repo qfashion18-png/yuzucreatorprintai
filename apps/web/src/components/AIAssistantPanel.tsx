@@ -1,7 +1,10 @@
 "use client";
 
 import type { DesignEditAction } from "@creator-print-ai/ai";
-import { Bot, WandSparkles } from "lucide-react";
+import { AnimatedProgress } from "@/components/ui/motion";
+import { Surface } from "@/components/ui/surfaces";
+import { motion } from "framer-motion";
+import { Bot, MessageSquareText, WandSparkles } from "lucide-react";
 import { useState } from "react";
 
 export function AIAssistantPanel({
@@ -22,6 +25,11 @@ export function AIAssistantPanel({
     "Ask for sticker ideas, launch copy, QR CTAs, or preflight help.",
   );
   const [loading, setLoading] = useState(false);
+  const suggestions = [
+    "Make this merch-ready",
+    "Write a stronger QR call to action",
+    "Suggest a launch caption",
+  ];
 
   async function askAssistant() {
     setLoading(true);
@@ -60,25 +68,57 @@ export function AIAssistantPanel({
   }
 
   return (
-    <section className="rounded border border-slate-200 bg-white p-4">
-      <h2 className="flex items-center gap-2 text-sm font-black">
-        <Bot className="size-4 text-[#007f88]" aria-hidden="true" />
-        AI assistant
-      </h2>
+    <Surface className="p-4">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="flex items-center gap-2 text-sm font-black">
+          <span className="grid size-8 place-items-center rounded-md bg-[#ecfeff] text-[#007f88]">
+            <Bot className="size-4" aria-hidden="true" />
+          </span>
+          AI assistant
+        </h2>
+        <MessageSquareText className="size-4 text-slate-400" aria-hidden="true" />
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {suggestions.map((suggestion) => (
+          <button
+            key={suggestion}
+            type="button"
+            onClick={() => setMessage(suggestion)}
+            className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-left text-[11px] font-black text-slate-600 transition hover:border-[#00a9b7] hover:bg-[#ecfeff] hover:text-[#007f88]"
+          >
+            {suggestion}
+          </button>
+        ))}
+      </div>
       <textarea
         value={message}
         onChange={(event) => setMessage(event.target.value)}
-        className="mt-3 min-h-24 w-full rounded border border-slate-200 p-3 text-sm outline-none focus:border-[#00a9b7]"
+        className="mt-3 min-h-24 w-full rounded-md border border-slate-200 p-3 text-sm leading-6 outline-none transition focus:border-[#00a9b7]"
       />
       <button
         type="button"
         onClick={() => void askAssistant()}
-        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded bg-[#06131a] px-3 py-2 text-sm font-black text-white"
+        disabled={loading}
+        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#06131a] px-3 py-2.5 text-sm font-black text-white transition hover:bg-[#007f88] disabled:cursor-wait disabled:opacity-80"
       >
         <WandSparkles className="size-4" aria-hidden="true" />
         {loading ? "Thinking" : onApplyActions ? "Edit with AI" : "Ask AI"}
       </button>
-      <p className="mt-3 text-sm leading-6 text-slate-600">{reply}</p>
-    </section>
+      {loading ? (
+        <AnimatedProgress
+          value={72}
+          className="mt-3 h-1.5"
+          indicatorClassName="bg-[#d5ff5f]"
+        />
+      ) : null}
+      <motion.p
+        key={reply}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mt-3 rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-600"
+      >
+        {reply}
+      </motion.p>
+    </Surface>
   );
 }

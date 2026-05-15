@@ -1,12 +1,15 @@
 import type { QuoteResult } from "@creator-print-ai/print-provider";
+import { Surface } from "@/components/ui/surfaces";
 import { formatMoney } from "@/lib/utils";
 
 export function QuoteSummary({ quote }: { quote?: QuoteResult }) {
   return (
-    <section className="rounded border border-slate-200 bg-white p-5">
+    <Surface className="p-5">
       <h2 className="text-lg font-black">Quote</h2>
       {!quote ? (
-        <p className="mt-3 text-sm text-slate-600">Generate a mock quote when the design is ready.</p>
+        <p className="mt-3 rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+          Generate a mock quote when the design is ready.
+        </p>
       ) : (
         <dl className="mt-4 space-y-2 text-sm">
           <div className="flex justify-between">
@@ -27,6 +30,6 @@ export function QuoteSummary({ quote }: { quote?: QuoteResult }) {
           </div>
         </dl>
       )}
-    </section>
+    </Surface>
   );
 }

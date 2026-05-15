@@ -19,7 +19,8 @@ export function CheckoutButton() {
     <button
       type="button"
       onClick={() => void submit()}
-      className="h-fit rounded bg-[#d5ff5f] px-5 py-3 text-sm font-black text-[#06131a]"
+      disabled={loading}
+      className="h-fit rounded-md bg-[#d5ff5f] px-5 py-3 text-sm font-black text-[#06131a] shadow-sm transition hover:bg-[#c7f34f] disabled:cursor-wait disabled:opacity-80"
     >
       {loading ? "Creating order" : "Place mock order"}
     </button>
